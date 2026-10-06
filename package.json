@@ -1,0 +1,11 @@
+{
+  "name": "nodebb-plugin-inactive-users",
+  "version": "0.1.0",
+  "description": "Email controls for inactive NodeBB users with dryrun reports",
+  "license": "GPL-3.0-only",
+  "repository": "https://github.com/MagicMirrorOrg/nodebb-plugin-inactive-users",
+  "main": "library.js",
+  "scripts": { "test": "node --test" },
+  "engines": { "node": ">=20" },
+  "nbbpm": { "compatibility": "^4.16.1" }
+}
