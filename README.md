@@ -28,8 +28,9 @@ This plugin does not process SES bounces or complaints.
 
 ## Development status
 
-The first group implements settings normalization and inactivity selection with targeted backend tests.
-The NodeBB integration, action runner, report, and scheduler are not implemented yet.
+The plugin initializes settings through NodeBB and reads inactive users in batches of 100.
+Initialization preserves stored settings. Candidate selection does not change accounts or send emails.
+The action runner, report, administration page, and scheduler are not implemented yet.
 Do not install this repository on a live forum yet.
 
 Run the backend tests with `npm test`.
@@ -40,4 +41,7 @@ Calendar month calculations use UTC to keep selection consistent across servers.
 The scheduler timezone source still requires inspection of the NodeBB configuration.
 No code is deployed to the MagicMirror server.
 
-Next task: connect settings and batched user selection to NodeBB APIs.
+No additional technical debt was identified in this group.
+The period must be a positive whole number. An empty value is invalid.
+The administration page must display that validation error before saving settings.
+Next task: implement the dryrun report and independent account actions.

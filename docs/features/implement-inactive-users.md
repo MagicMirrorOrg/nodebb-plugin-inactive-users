@@ -10,7 +10,8 @@ Provide independent controls to disable digests, disable email notifications, an
 Do not process SES feedback. Do not add a custom login confirmation flow.
 Keep dryrun enabled by default. Keep automatic execution disabled by default.
 Support manual execution and optional nightly execution at 03:00 in the forum timezone.
-Confirm action defaults, timezone source, and report layout with the user before implementation.
+Enable all three actions by default. Show accounts, last activity, actions, and totals in the report.
+Check the forum timezone source before the scheduler implementation.
 
 ## User Flow Examples
 
@@ -24,15 +25,15 @@ When a user returns, NodeBB retains its existing confirmation behavior. The plug
 
 **Backend:**
 
-- [ ] Create the plugin manifest and package metadata using NodeBB plugin conventions.
-- [ ] Store the inactivity period, three action switches, dryrun switch, and nightly execution switch through `meta.settings`.
-- [ ] Select users in batches through NodeBB database APIs using `lastonline` and the `joindate` fallback.
-- [ ] Define the calendar-month cutoff and include all user roles.
+- [x] Create the plugin manifest and package metadata using NodeBB plugin conventions.
+- [x] Store the inactivity period, three action switches, dryrun switch, and nightly execution switch through `meta.settings`.
+- [x] Select users in batches through NodeBB database APIs using `lastonline` and the `joindate` fallback.
+- [x] Define the calendar-month cutoff and include all user roles.
 
 **Backend Tests:**
 
-- [ ] Check the cutoff boundary, calendar month boundaries, and never-active users.
-- [ ] Check that administrators and moderators follow the same selection rules.
+- [x] Check the cutoff boundary, calendar month boundaries, and never-active users.
+- [x] Check that administrators and moderators follow the same selection rules.
 
 **UI:**
 

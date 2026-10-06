@@ -14,7 +14,7 @@ test('defaults enable dryrun and all actions but disable the schedule', () => {
 test('settings handle NodeBB checkbox strings and reject invalid periods', () => {
   assert.equal(normalizeSettings({ nightly: 'off', dryrun: 'on' }).nightly, false);
   assert.equal(normalizeSettings({ dryrun: 'off' }).dryrun, false);
-  for (const months of [0, -1, 1.5, 'six']) {
+  for (const months of ['', 0, -1, 1.5, 'six']) {
     assert.throws(() => normalizeSettings({ months }), /positive integer/);
   }
 });
