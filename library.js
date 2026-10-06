@@ -1,29 +1,39 @@
 'use strict';
 
-const { defaults, normalizeSettings, cutoffDate, isInactive } = require('./lib/inactivity');
+const { defaults } = require('./lib/inactivity');
+const Runner = require('./lib/runner');
+const Coordinator = require('./lib/coordinator');
+const registerAdmin = require('./lib/admin');
 
 const plugin = module.exports;
 
-plugin.init = async function () {
-  const meta = require.main.require('./src/meta');
-  const settings = Object.fromEntries(Object.entries(defaults).map(([key, value]) => [
+plugin.init = async function ({ router }) {
+  const services = {
+    meta: nodebb.require('./src/meta'),
+    batch: nodebb.require('./src/batch'),
+    user: nodebb.require('./src/user'),
+    db: nodebb.require('./src/database'),
+    groups: nodebb.require('./src/groups'),
+    notifications: nodebb.require('./src/notifications'),
+    pubsub: nodebb.require('./src/pubsub'),
+    cron: nodebb.require('./src/cron'),
+    nconf: nodebb.require('nconf'),
+    logger: nodebb.require('winston'),
+    socketAdmin: nodebb.require('./src/socket.io/admin'),
+    socketPlugins: nodebb.require('./src/socket.io/plugins'),
+    routeHelpers: nodebb.require('./src/routes/helpers'),
+    controllerHelpers: nodebb.require('./src/controllers/helpers'),
+  };
+  await services.meta.settings.setOnEmpty('inactive-users', Object.fromEntries(Object.entries(defaults).map(([key, value]) => [
     key, typeof value === 'boolean' ? (value ? 'on' : 'off') : value,
-  ]));
-  await meta.settings.setOnEmpty('inactive-users', settings);
+  ])));
+  services.runner = new Runner(services);
+  const coordinator = new Coordinator(services);
+  await coordinator.init();
+  registerAdmin(services, coordinator, router);
 };
 
-plugin.getCandidates = async function (now = new Date()) {
-  const meta = require.main.require('./src/meta');
-  const batch = require.main.require('./src/batch');
-  const user = require.main.require('./src/user');
-  const settings = normalizeSettings(await meta.settings.get('inactive-users'));
-  const cutoff = cutoffDate(now, settings.months).getTime();
-  const users = [];
-
-  await batch.processSortedSet('users:joindate', async (uids) => {
-    const records = await user.getUsersFields(uids, ['uid', 'username', 'lastonline', 'joindate']);
-    users.push(...records.filter(record => record && isInactive(record, cutoff)));
-  }, { batch: 100 });
-
-  return { settings, cutoff, users };
+plugin.addAdminNavigation = async function (header) {
+  header.plugins.push({ route: '/plugins/inactive-users', icon: 'fa-user-clock', name: 'Inactive Users' });
+  return header;
 };
