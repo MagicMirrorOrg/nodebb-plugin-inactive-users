@@ -5,6 +5,18 @@
   "url": "https://github.com/MagicMirrorOrg/nodebb-plugin-inactive-users",
   "library": "./library.js",
   "hooks": [
-    { "hook": "static:app.load", "method": "init" }
-  ]
+    {
+      "hook": "static:app.load",
+      "method": "init"
+    },
+    {
+      "hook": "filter:admin.header.build",
+      "method": "addAdminNavigation"
+    }
+  ],
+  "templates": "./templates",
+  "settingsRoute": "/admin/plugins/inactive-users",
+  "modules": {
+    "../admin/plugins/inactive-users.js": "./public/admin.js"
+  }
 }
